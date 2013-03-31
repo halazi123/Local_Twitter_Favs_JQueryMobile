@@ -7,6 +7,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
 
 <script>
+
+function parseDate(str) {
+var v=str.split(' ');
+var d = v[1]+" "+v[2]+", "+v[5];
+return d;
+//return new Date(Date.parse(v[1]+" "+v[2]+", "+v[5]+" "+v[3]));
+}
+
+
+
 	// Get favorite json file
 	$.getJSON('favs.json', function(data) {
 		var i = 0;
@@ -16,7 +26,7 @@
 					'<li id="tweet' + i +'"><a href="#tweet' + i +'">' +
 					'<img border="3" src="' + data[i].user.profile_background_image_url + '">' +
 					data[i].user.name + ' @' +
-					data[i].created_at +
+					parseDate(data[i].created_at) +
 					'<p><br>' + data[i].text + '</p></a>' + '</li>');
 
 			//create each tweet page
@@ -25,7 +35,7 @@
 					'<div data-role="header">' +
 					'<h1>' + data[i].user.name + '</h1>' +
 					'<h2>@' + data[i].user.screen_name + ' ' + 
-					data[i].created_at +'</h2>' +
+					parseDate(data[i].created_at) +'</h2>' +
 					'</div>' + //header closing div
 					'<div data-role="content">' + data[i].text + '</div>' +
 					'<div data-role="footer" data-position="fixed">' +
