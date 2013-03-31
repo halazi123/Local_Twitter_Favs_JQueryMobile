@@ -12,10 +12,10 @@ function parseDate(str) {
 var v=str.split(' ');
 var d = v[1]+" "+v[2]+", "+v[5];
 return d;
-//return new Date(Date.parse(v[1]+" "+v[2]+", "+v[5]+" "+v[3]));
 }
+</script>
 
-
+<script>
 
 	// Get favorite json file
 	$.getJSON('favs.json', function(data) {
@@ -24,8 +24,8 @@ return d;
 			//add tweet to tweet list
 			$('#tweetlist').append(
 					'<li id="tweet' + i +'"><a href="#tweet' + i +'">' +
-					'<img border="3" src="' + data[i].user.profile_background_image_url + '">' +
-					data[i].user.name + ' @' +
+					'<img border="3" src="' + data[i].user.profile_image_url + '">' +
+					data[i].user.name + ' @' + data[i].user.screen_name + ' tweeted on ' +
 					parseDate(data[i].created_at) +
 					'<p><br>' + data[i].text + '</p></a>' + '</li>');
 
@@ -35,9 +35,9 @@ return d;
 					'<div data-role="header">' +
 					'<h1>' + data[i].user.name + '</h1>' +
 					'<h2>@' + data[i].user.screen_name + ' ' + 
-					parseDate(data[i].created_at) +'</h2>' +
+					parseDate(data[i].user.created_at) +'</h2>' +
 					'</div>' + //header closing div
-					'<div data-role="content">' + data[i].text + '</div>' +
+					'<div data-role="content">' + data[i].user.description + '</div>' +
 					'<div data-role="footer" data-position="fixed">' +
 					'<h1>Footer</h4' + '</div>' +
 					'</div>' //page closing div
@@ -74,9 +74,7 @@ return d;
   </div>
 
   <div data-role="content">
-  	<ul id="tweetlist" data-role="listview" data-inset="true" data-filter="true">
-    	
-    </ul>
+  	<ul id="tweetlist" data-role="listview" data-inset="true" data-filter="true"></ul>
   </div>
   
   <div data-role="footer" data-position="fixed">
@@ -84,9 +82,6 @@ return d;
 </div>
 
 <!-- Tweet -->
-<div data-role="page" id="tweet01">
-  
-</div>
 
 <!-- Profile Page -->
 <div data-role="page" id="profile">
