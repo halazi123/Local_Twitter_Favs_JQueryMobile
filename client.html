@@ -100,7 +100,7 @@ function parseText(str, ent) {
 					'<div data-role="header" data-theme="b">' +
 					'<h1>Profile summary</h1></div>' + //closing header
 					'<div data-role="content">' +
-					'<img border="3" src="' + val.user.profile_image_url + '">' +
+					'<img src="' + val.user.profile_image_url + '">' +
 					'<div><h2>' + val.user.name + '</h2>' +
 					'<h4><a style="text-decoration: none;" ' + //link to twitter profile page
 					'href="https://twitter.com/' + val.user.screen_name + '">' +
@@ -112,9 +112,9 @@ function parseText(str, ent) {
 					'</div>' + //content closing div
 					'<div data-role="footer" data-position="fixed" data-theme="b">' +
 					'<div data-role="navbar"><ul>' +
-					'<li><h6>' + data[i].user.listed_count + '<br>TWEETS</h6></li>' +
-					'<li><h6>' + data[i].user.friends_count + '<br>FOLLOWING</h6></li>' +
-					'<li><h6>' + data[i].user.followers_count + '<br>FOLLOWERS</h6></li>' +
+					'<li><h6>' + val.user.listed_count + '<br>TWEETS</h6></li>' +
+					'<li><h6>' + val.user.friends_count + '<br>FOLLOWING</h6></li>' +
+					'<li><h6>' + val.user.followers_count + '<br>FOLLOWERS</h6></li>' +
 					'</div>' + //footer closing div
 					'</div>' //page closing div					
 			);
