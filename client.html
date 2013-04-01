@@ -94,7 +94,6 @@ function parseText(str, ent) {
 					);
 					
 			//create profile page
-			var separator = (val.user.location.length > 0) ? ' · ' : '';
 			$('body').append(
 					'<div data-role="page" id="user' + i + '" style="text-align:center;">' +
 					'<div data-role="header" data-theme="b">' +
@@ -106,7 +105,7 @@ function parseText(str, ent) {
 					'href="https://twitter.com/' + val.user.screen_name + '">' +
 					'@' + val.user.screen_name + '</a></h4></div>' + 
 					'<div>' + val.user.description + '</div>' +
-					'<div><p>' + val.user.location + separator + '<br>' + 
+					'<div><p>' + val.user.location + '<br>' + 
 					'<a class="profile-link" href="' + val.user.url + '">' + 
 					val.user.url + '</a></p></div>' + //user url
 					'</div>' + //content closing div
