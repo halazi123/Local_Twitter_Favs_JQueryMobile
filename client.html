@@ -12,6 +12,38 @@ function parseDate(str) {
 	var d = v[1]+" "+v[2]+", "+v[5];
 	return d;
 }
+
+// puts hashtags, urls, @tags into <a> tag
+function parseText(str, ent) {
+	var ret = str;
+	var atag = '';
+	var indices = [];
+	if (ent.hashtags.length > 0) {
+		for (var c=0; c<ent.hashtags.length; c++) {
+			indices = ent.hashtags[c].indices;
+			atag = '<a href="http://twitter.com/search?q=%23' + ent.hashtags[c].text + '&src=hash">' + str.substring(indices[0], indices[1]) + '</a>';
+			ret = ret.replace(str.substring(indices[0], indices[1]), atag);
+		}
+	}
+	
+	if (ent.urls.length > 0) {
+		for (var c=0; c<ent.urls.length; c++) {
+			indices = ent.urls[c].indices;
+			atag = '<a href="' + ent.urls[c].url + '">' + ent.urls[c].display_url + '</a>';
+			ret = ret.replace(str.substring(indices[0], indices[1]), atag);
+		}
+	}
+	
+	if (ent.user_mentions.length > 0) {
+		for (var c=0; c<ent.user_mentions.length; c++) {
+			indices = ent.user_mentions[c].indices;
+			atag = '<a href="http://twitter.com/' + ent.user_mentions[c].screen_name + '">' + str.substring(indices[0], indices[1]) + '</a>';
+			ret = ret.replace(str.substring(indices[0], indices[1]), atag);
+		}
+	}
+	
+	return ret;
+}
 </script>
 
 <script>
@@ -24,9 +56,9 @@ function parseDate(str) {
 		
 		$.each(data, function(key, val) {
 			
-			// 10 tweets per page
-			if ((i > 0) && (i % 10 == 0)) {
-				page = (i / 10) + 1;
+			// 15 tweets per page
+			if ((i > 0) && (i % 15 == 0)) {
+				page = (i / 15) + 1;
 				$('body').append('<div data-role="page" data-theme="b" id="page' + page + '">' +
 								'<div data-role="header" data-position="fixed" data-theme="b">' +
 								'<h1>Twitter Favs</h1></div><div data-role="content">' +
@@ -38,47 +70,47 @@ function parseDate(str) {
 			
 			//add tweet to tweetlist
 			$('#tweetlist' + page).append(
-					'<li data-icon="false"><a href="#tweet' + i +'"><img src="' + data[i].user.profile_image_url + '"><p><strong class="username">' +
-					data[i].user.name + '</strong><span class="screenname"> @' + data[i].user.screen_name + '</span><br> on ' + parseDate(data[i].created_at) +
-					'</p><p>' + data[i].text + '</p></a></li>');
+					'<li data-icon="false"><a href="#tweet' + i +'"><img src="' + val.user.profile_image_url + '"><p><strong class="username">' +
+					val.user.name + '</strong><span class="screenname"> @' + val.user.screen_name + '</span><br> on ' + parseDate(val.created_at) +
+					'</p><p>' + val.text + '</p></a></li>');
 					
 			//create each tweet page
 			$('body').append('<div data-role="page" id="tweet' + i + '">' +
 					'<div data-role="header" data-theme="b">' +
-					'<img class="pagepic" src="' + data[i].user.profile_image_url + '">' +
+					'<img class="pagepic" src="' + val.user.profile_image_url + '">' +
 					'</div>' + //header closing div
 					'<div data-role="content">' + 
 					'<p><a data-rel="dialog" data-transition="pop" href="#user' + i + '" data-inline="true" data-role="button" data-icon="info">' +
-					'<strong>' + data[i].user.name + '</strong></a><br>' +
-					'<a href="http://twitter.com/' + data[i].user.screen_name + '"><span class="screenname">@' + 
-					data[i].user.screen_name + 
-					'</span></a><br> tweeted on ' + parseDate(data[i].created_at) +
-					'</p>' + data[i].text + 
-					'</div>' +
-					'<div data-role="footer" data-position="fixed" data-theme="b">' +
-					'<div class="footerbutton"><a data-inline="true" data-rel="back" data-role="button">Back</a></div>' +
+					'<strong>' + val.user.name + '</strong></a><br>' +
+					'<a href="http://twitter.com/' + val.user.screen_name + '"><span class="screenname">@' + 
+					val.user.screen_name + 
+					'</span></a><br> tweeted on ' + parseDate(val.created_at) +
+					'</p>' + parseText(val.text, val.entities) + 
+					//'</p>' + val.text + 
+					'</div><div data-role="footer" data-position="fixed" data-theme="b">' +
+					'<div class="footerbutton">' + val.retweet_count + '<br>Retweets</div>' +
 					'</div>' +
 					'</div>' //page closing div
 					);
 					
 			//create profile page
-			var separator = (data[i].user.location.length > 0) ? ' ?' : '';
+			var separator = (val.user.location.length > 0) ? ' ?' : '';
 			$('body').append(
 					'<div data-role="page" id="user' + i + '" style="text-align:center;">' +
 					'<div data-role="header" data-theme="b">' +
 					'<h1>Profile summary</h1></div>' + //closing header
 					'<div data-role="content">' +
-					'<img border="3" src="' + data[i].user.profile_image_url + '">' +
+					'<img border="3" src="' + val.user.profile_image_url + '">' +
 					'<div><h2><a class="profile-link" ' + //link to twitter profile page
-					'href="https://twitter.com/' + data[i].user.screen_name + '">' +
-					data[i].user.name + '</a></h2>' +
+					'href="https://twitter.com/' + val.user.screen_name + '">' +
+					val.user.name + '</a></h2>' +
 					'<h4><a class="screen-name-link" ' + //link to twitter profile page
-					'href="https://twitter.com/' + data[i].user.screen_name + '">' +
-					'@' + data[i].user.screen_name + '</a></h4></div>' + 
-					'<div>' + data[i].user.description + '</div>' +
-					'<div><p>' + data[i].user.location + separator + 
-					'<a class="profile-link" href="' + data[i].user.url + '">' + 
-					data[i].user.url + '</a></p></div>' + //user url
+					'href="https://twitter.com/' + val.user.screen_name + '">' +
+					'@' + val.user.screen_name + '</a></h4></div>' + 
+					'<div>' + val.user.description + '</div>' +
+					'<div><p>' + val.user.location + separator + 
+					'<a class="profile-link" href="' + val.user.url + '">' + 
+					val.user.url + '</a></p></div>' + //user url
 					'</div>' + //content closing div
 					'<div data-role="footer" data-position="fixed" data-theme="b">' +
 					'<div data-role="navbar"><ul>' +
