@@ -2,12 +2,9 @@
 <html>
 <head>
 <title>My Favorite Tweets</title>
-<meta charset="utf-8" />
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.css" />
+<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
-<link rel="stylesheet" href="theme.css" />
-<link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.0/jquery.mobile.structure-1.3.0.min.css" /> 
-<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script> 
-
 <script>
 
 function parseDate(str) {
@@ -25,35 +22,35 @@ return d;
 		$.each(data, function(key, val) {
 			//add tweet to tweet list
 			$('#tweetlist').append(
-					'<li id="tweet' + i +'"><a href="#tweet' + i +'_user">' +
-					'<img border="3" src="' + data[i].user.profile_image_url + '">' +
-					data[i].user.name + ' @' + data[i].user.screen_name + ' tweeted on ' +
-					parseDate(data[i].created_at) +
-					'<p><br>' + data[i].text + '</p></a>' + '</li>');
-
+					'<li data-icon="false"><a href="#tweet' + i +'"><img src="' + data[i].user.profile_image_url + '"><p><strong class="username">' +
+					data[i].user.name + '</strong><span class="screenname"> @' + data[i].user.screen_name + '</span><br> on ' + parseDate(data[i].created_at) +
+					'</p><p>' + data[i].text + '</p></a></li>');
+					
 			//create each tweet page
 			$('body').append(
-					'<div data-role="page" id="tweet' + i + '_user">' +
-					'<div data-role="header">' +
-					'<h1>' + data[i].user.name + '</h1>' +
-					'<h2>@' + data[i].user.screen_name + ' ' + 
-					parseDate(data[i].user.created_at) +'</h2>' +
+					'<div data-role="page" id="tweet' + i + '">' +
+					'<div data-role="header" data-theme="b">' +
+					'<img class="pagepic" src="' + data[i].user.profile_image_url + '">' +
 					'</div>' + //header closing div
-					'<div data-role="content">' + data[i].user.description + '</div>' +
-					'<div data-role="footer" data-position="fixed">' +
-					//TESTING : use this <a> tag to link to the profile pages
-					'<h1><a href="#profile' +  i + '" data-rel="dialog" data-transition="pop" data-inline="true">Footer</a></h1>' 
-					+ '</div>' + //ref to profile for testing
-					//-----
+					'<div data-role="content">' + 
+					'<p><a data-rel="dialog" data-transition="pop" href="#user' + i + '" data-inline="true" data-role="button" data-icon="info">' +
+					'<strong>' + data[i].user.name + '</strong></a><br>' +
+					'<a href="http://twitter.com/' + data[i].user.screen_name + '"><span class="screenname">@' + 
+					data[i].user.screen_name + 
+					'</span></a><br> tweeted on ' + parseDate(data[i].created_at) +
+					'</p>' + data[i].text + 
+					'</div>' +
+					'<div data-role="footer" data-position="fixed" data-theme="b">' +
+					'<div><a class="backbutton" data-inline="true" data-rel="back" data-role="button">Back</a></div>' +
+					'</div>' +
 					'</div>' //page closing div
 			);
 			
 			//create profile page
-			var separator = (data[i].user.location.length > 0) ? ' Â· ' : '';
+			var separator = (data[i].user.location.length > 0) ? ' · ' : '';
 			$('body').append(
-					
-					'<div data-role="page" id="profile' + i + '" style="text-align:center;">' +
-					'<div data-role="header">' +
+					'<div data-role="page" id="user' + i + '" style="text-align:center;">' +
+					'<div data-role="header" data-theme="b">' +
 					'<h1>Profile summary</h1></div>' + //closing header
 					'<div data-role="content">' +
 					'<img border="3" src="' + data[i].user.profile_image_url + '">' +
@@ -68,7 +65,7 @@ return d;
 					'<a class="profile-link" href="' + data[i].user.url + '">' + 
 					data[i].user.url + '</a></p></div>' + //user url
 					'</div>' + //content closing div
-					'<div data-role="footer" data-position="fixed">' +
+					'<div data-role="footer" data-position="fixed" data-theme="b">' +
 					'<div data-role="navbar"><ul>' +
 					'<li><h6>1<br>TWEETS</h6></li>' +
 					'<li><h6>2<br>FOLLOWING</h6></li>' +
@@ -80,23 +77,59 @@ return d;
 			
 			i++;
 		});
+		$('#tweetlist').listview('refresh');
 	});
 </script>
 
-<!-- Adding the 'back' button -->
-<script>
-	$(document).bind('mobileinit', function(){
-		$.mobile.page.prototype.options.addBackBtn = 'true';
-	});
-</script>
 
 <script src="http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.js"></script>
 
 <style type="text/css">
-	
 	#profile div {
 		text-align: center;
 	}
+	
+	.alignleft {
+	float: left;
+	}
+	.alignright {
+		float: right;
+	}
+	
+	.username {
+		font-size:1.1em;
+	}
+	
+	.screenname {
+		font-size:0.9em;
+		color:#6495ED;
+	}
+	
+	ul li {
+		max-height: 70px;
+	}
+	
+	img {
+		width:65px;
+		height:65px;
+		border: 1px solid #666;
+		border-radius: 10px;
+
+	}
+	
+	.pagepic {
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	
+	.backbutton {
+		display:block; 
+		width:100px; 
+		margin:0 auto;
+	}
+	
+	
 </style>
 
 </head>
@@ -104,16 +137,16 @@ return d;
 <body>
 
 <!-- Main layout -->
-<div data-role="page" id="mainPage">
-  <div data-role="header" data-position="fixed">
-    <h1>My Favorite Tweets</h1>
+<div data-role="page" id="mainPage" data-theme="b">
+  <div data-role="header" data-position="fixed" data-theme="b">
+    <h1>Twitter Favs</h1>
   </div>
 
   <div data-role="content">
-  	<ul id="tweetlist" data-role="listview" data-inset="true" data-filter="true"></ul>
+  	<ul id="tweetlist" data-role="listview" data-inset="true" data-filter="true" data-theme="c" data-dividertheme="a"></ul>
   </div>
   
-  <div data-role="footer" data-position="fixed" align="center">
+  <div data-role="footer" data-position="fixed" data-theme="b">
 	<a href="#mainPage" data-role="button" data-inline="true">1</a>
 </div>
 </div>
