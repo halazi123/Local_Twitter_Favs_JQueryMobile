@@ -1179,4 +1179,33 @@ a.ui-link-inherit {
 	outline-width: 1px;
 	outline-style: dotted;
 }
-			
+
+a.profile-link {
+	color: black !important;
+	text-decoration: none;
+}
+
+a.profile-link:link {
+	color: black !important;
+	text-decoration: none;
+}
+
+a.profile-link:visited {
+	color: black !important;
+	text-decoration: none;
+}
+
+a.profile-link:hover {
+	color: black !important;
+	text-decoration: underline;
+}
+
+a.profile-link:active {
+	color: black !important;
+	text-decoration: none;
+}
+
+a.screen-name-link {
+	color: black !important;
+	text-decoration: none;
+}

@@ -25,7 +25,7 @@ return d;
 		$.each(data, function(key, val) {
 			//add tweet to tweet list
 			$('#tweetlist').append(
-					'<li id="tweet' + i +'"><a href="#tweet' + i +'">' +
+					'<li id="tweet' + i +'"><a href="#tweet' + i +'_user">' +
 					'<img border="3" src="' + data[i].user.profile_image_url + '">' +
 					data[i].user.name + ' @' + data[i].user.screen_name + ' tweeted on ' +
 					parseDate(data[i].created_at) +
@@ -33,7 +33,7 @@ return d;
 
 			//create each tweet page
 			$('body').append(
-					'<div data-role="page" id="tweet' + i + '">' +
+					'<div data-role="page" id="tweet' + i + '_user">' +
 					'<div data-role="header">' +
 					'<h1>' + data[i].user.name + '</h1>' +
 					'<h2>@' + data[i].user.screen_name + ' ' + 
@@ -41,9 +41,42 @@ return d;
 					'</div>' + //header closing div
 					'<div data-role="content">' + data[i].user.description + '</div>' +
 					'<div data-role="footer" data-position="fixed">' +
-					'<h1>Footer</h4' + '</div>' +
+					//TESTING : use this <a> tag to link to the profile pages
+					'<h1><a href="#profile' +  i + '" data-rel="dialog" data-transition="pop" data-inline="true">Footer</a></h1>' 
+					+ '</div>' + //ref to profile for testing
+					//-----
 					'</div>' //page closing div
-					);
+			);
+			
+			//create profile page
+			var separator = (data[i].user.location.length > 0) ? ' · ' : '';
+			$('body').append(
+					
+					'<div data-role="page" id="profile' + i + '" style="text-align:center;">' +
+					'<div data-role="header">' +
+					'<h1>Profile summary</h1></div>' + //closing header
+					'<div data-role="content">' +
+					'<img border="3" src="' + data[i].user.profile_image_url + '">' +
+					'<div><h2><a class="profile-link" ' + //link to twitter profile page
+					'href="https://twitter.com/' + data[i].user.screen_name + '">' +
+					data[i].user.name + '</a></h2>' +
+					'<h4><a class="screen-name-link" ' + //link to twitter profile page
+					'href="https://twitter.com/' + data[i].user.screen_name + '">' +
+					'@' + data[i].user.screen_name + '</a></h4></div>' + 
+					'<div>' + data[i].user.description + '</div>' +
+					'<div><p>' + data[i].user.location + separator + 
+					'<a class="profile-link" href="' + data[i].user.url + '">' + 
+					data[i].user.url + '</a></p></div>' + //user url
+					'</div>' + //content closing div
+					'<div data-role="footer" data-position="fixed">' +
+					'<div data-role="navbar"><ul>' +
+					'<li><h6>1<br>TWEETS</h6></li>' +
+					'<li><h6>2<br>FOLLOWING</h6></li>' +
+					'<li><h6>3<br>FOLLOWERS</h6></li>' +
+					'</div>' + //footer closing div
+					'</div>' //page closing div
+					
+			);
 			
 			i++;
 		});
@@ -82,6 +115,7 @@ return d;
   
   <div data-role="footer" data-position="fixed" align="center">
 	<a href="#mainPage" data-role="button" data-inline="true">1</a>
+</div>
 </div>
 
 <!-- Tweet -->
