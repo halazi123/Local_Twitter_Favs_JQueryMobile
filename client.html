@@ -5,12 +5,12 @@
 <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.css" />
 <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
-<script>
 
+<script>
 function parseDate(str) {
-var v=str.split(' ');
-var d = v[1]+" "+v[2]+", "+v[5];
-return d;
+	var v=str.split(' ');
+	var d = v[1]+" "+v[2]+", "+v[5];
+	return d;
 }
 </script>
 
@@ -19,16 +19,31 @@ return d;
 	// Get favorite json file
 	$.getJSON('favs.json', function(data) {
 		var i = 0;
+		var page = 1;
+		var pagenav = '<a href="#page1" data-role="button" data-inline="true">1</a>';
+		
 		$.each(data, function(key, val) {
-			//add tweet to tweet list
-			$('#tweetlist').append(
+			
+			// 10 tweets per page
+			if ((i > 0) && (i % 10 == 0)) {
+				page = (i / 10) + 1;
+				$('body').append('<div data-role="page" data-theme="b" id="page' + page + '">' +
+								'<div data-role="header" data-position="fixed" data-theme="b">' +
+								'<h1>Twitter Favs</h1></div><div data-role="content">' +
+								'<ul id="tweetlist' + page + '" data-role="listview" data-inset="true" data-filter="true" data-theme="c" data-dividertheme="b">' +
+								'</ul></div><div id="footer' + page + '" data-role="footer" data-position="fixed" data-theme="b"></div></div>'
+								);
+				pagenav += '<a href="#page' + page + '" data-role="button" data-inline="true">' + page + '</a>';
+			}
+			
+			//add tweet to tweetlist
+			$('#tweetlist' + page).append(
 					'<li data-icon="false"><a href="#tweet' + i +'"><img src="' + data[i].user.profile_image_url + '"><p><strong class="username">' +
 					data[i].user.name + '</strong><span class="screenname"> @' + data[i].user.screen_name + '</span><br> on ' + parseDate(data[i].created_at) +
 					'</p><p>' + data[i].text + '</p></a></li>');
 					
 			//create each tweet page
-			$('body').append(
-					'<div data-role="page" id="tweet' + i + '">' +
+			$('body').append('<div data-role="page" id="tweet' + i + '">' +
 					'<div data-role="header" data-theme="b">' +
 					'<img class="pagepic" src="' + data[i].user.profile_image_url + '">' +
 					'</div>' + //header closing div
@@ -41,13 +56,13 @@ return d;
 					'</p>' + data[i].text + 
 					'</div>' +
 					'<div data-role="footer" data-position="fixed" data-theme="b">' +
-					'<div><a class="backbutton" data-inline="true" data-rel="back" data-role="button">Back</a></div>' +
+					'<div class="footerbutton"><a data-inline="true" data-rel="back" data-role="button">Back</a></div>' +
 					'</div>' +
 					'</div>' //page closing div
-			);
-			
+					);
+					
 			//create profile page
-			var separator = (data[i].user.location.length > 0) ? ' · ' : '';
+			var separator = (data[i].user.location.length > 0) ? ' ?' : '';
 			$('body').append(
 					'<div data-role="page" id="user' + i + '" style="text-align:center;">' +
 					'<div data-role="header" data-theme="b">' +
@@ -71,13 +86,22 @@ return d;
 					'<li><h6>2<br>FOLLOWING</h6></li>' +
 					'<li><h6>3<br>FOLLOWERS</h6></li>' +
 					'</div>' + //footer closing div
-					'</div>' //page closing div
-					
+					'</div>' //page closing div					
 			);
 			
 			i++;
 		});
-		$('#tweetlist').listview('refresh');
+		
+		// add page navigation to every page
+		var num = 0;
+		for (var c=0; c<i; c++) {
+			if (c % 10 == 0) {
+				num = (c / 10) + 1;
+				$('#footer' + num).append('<div class="footerbutton">' + pagenav + '</div>');				
+			}
+		}
+		$('#tweetlist1').listview('refresh');
+		$('#footer1').trigger('create');
 	});
 </script>
 
@@ -85,9 +109,6 @@ return d;
 <script src="http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.js"></script>
 
 <style type="text/css">
-	#profile div {
-		text-align: center;
-	}
 	
 	.alignleft {
 	float: left;
@@ -114,7 +135,6 @@ return d;
 		height:65px;
 		border: 1px solid #666;
 		border-radius: 10px;
-
 	}
 	
 	.pagepic {
@@ -123,63 +143,25 @@ return d;
 		margin-right: auto;
 	}
 	
-	.backbutton {
-		display:block; 
-		width:100px; 
-		margin:0 auto;
+	.footerbutton {
+		text-align: center;
 	}
 	
-	
 </style>
-
 </head>
 
 <body>
-
-<!-- Main layout -->
-<div data-role="page" id="mainPage" data-theme="b">
+<div data-role="page" id="page1">
   <div data-role="header" data-position="fixed" data-theme="b">
     <h1>Twitter Favs</h1>
   </div>
 
   <div data-role="content">
-  	<ul id="tweetlist" data-role="listview" data-inset="true" data-filter="true" data-theme="c" data-dividertheme="a"></ul>
-  </div>
+  	<ul id="tweetlist1" data-role="listview" data-inset="true" data-filter="true" data-theme="c" data-dividertheme="b"></ul>
+  </div>  
   
-  <div data-role="footer" data-position="fixed" data-theme="b">
-	<a href="#mainPage" data-role="button" data-inline="true">1</a>
+  <div id="footer1" data-role="footer" data-position="fixed" data-theme="b"></div>
 </div>
-</div>
-
-<!-- Tweet -->
-
-<!-- Profile Page -->
-<div data-role="page" id="profile">
-  <div data-role="header">
-    <h1>Profile summary</h1>
-  </div>
-  <div data-role="content" data-theme="a">
-  	<img border="3" src="http://a0.twimg.com/profile_images/2823681988/f4f6f2bed8ab4d5a48dea4b9ea85d5f1_normal.jpeg">
-  </div>
-  <div data-role="content">Tim O'Reilly</div>
-  <div data-role="content"><a href="https://twitter.com/timoreilly" target="_blank">@timoreilly</a></div>
-  <div data-role="content">Founder and CEO, O'Reilly Media. Watching the alpha geeks, sharing their stories, helping the future unfold.</div>
-  <div data-role="content">Sebastopol, CA - <a href="http://radar.oreilly.com" target="_blank">http://radar.oreilly.com</a></div>
-
-  <div data-role="footer" data-theme="a" data-position="fixed">
-  	<div data-role="navbar">
-    <ul>
-    	<li>Tweets: 6612?</li>
-        <li>Following: 982</li>
-        <li>Followers: 82249</li>
-    </ul>
-   </div>
-  </div>
-</div>
-
-
-
-
-
 </body>
+
 </html>
