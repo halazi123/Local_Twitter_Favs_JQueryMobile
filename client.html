@@ -98,7 +98,7 @@ function parseText(str, ent) {
 			$('body').append(
 					'<div data-role="page" id="user' + i + '" style="text-align:center;">' +
 					'<div data-role="header" data-theme="b">' +
-					'<h1>Profile summary</h1></div>' + //closing header
+					'<h1>Profile</h1></div>' + //closing header
 					'<div data-role="content">' +
 					'<img src="' + val.user.profile_image_url + '">' +
 					'<div><h2>' + val.user.name + '</h2>' +
@@ -106,7 +106,7 @@ function parseText(str, ent) {
 					'href="https://twitter.com/' + val.user.screen_name + '">' +
 					'@' + val.user.screen_name + '</a></h4></div>' + 
 					'<div>' + val.user.description + '</div>' +
-					'<div><p>' + val.user.location + separator + 
+					'<div><p>' + val.user.location + separator + '<br>' + 
 					'<a class="profile-link" href="' + val.user.url + '">' + 
 					val.user.url + '</a></p></div>' + //user url
 					'</div>' + //content closing div
