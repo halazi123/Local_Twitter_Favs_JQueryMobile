@@ -94,17 +94,15 @@ function parseText(str, ent) {
 					);
 					
 			//create profile page
-			var separator = (val.user.location.length > 0) ? ' ?' : '';
+			var separator = (val.user.location.length > 0) ? ' · ' : '';
 			$('body').append(
 					'<div data-role="page" id="user' + i + '" style="text-align:center;">' +
 					'<div data-role="header" data-theme="b">' +
 					'<h1>Profile summary</h1></div>' + //closing header
 					'<div data-role="content">' +
 					'<img border="3" src="' + val.user.profile_image_url + '">' +
-					'<div><h2><a class="profile-link" ' + //link to twitter profile page
-					'href="https://twitter.com/' + val.user.screen_name + '">' +
-					val.user.name + '</a></h2>' +
-					'<h4><a class="screen-name-link" ' + //link to twitter profile page
+					'<div><h2>' + val.user.name + '</h2>' +
+					'<h4><a style="text-decoration: none;" ' + //link to twitter profile page
 					'href="https://twitter.com/' + val.user.screen_name + '">' +
 					'@' + val.user.screen_name + '</a></h4></div>' + 
 					'<div>' + val.user.description + '</div>' +
@@ -114,9 +112,9 @@ function parseText(str, ent) {
 					'</div>' + //content closing div
 					'<div data-role="footer" data-position="fixed" data-theme="b">' +
 					'<div data-role="navbar"><ul>' +
-					'<li><h6>1<br>TWEETS</h6></li>' +
-					'<li><h6>2<br>FOLLOWING</h6></li>' +
-					'<li><h6>3<br>FOLLOWERS</h6></li>' +
+					'<li><h6>' + data[i].user.listed_count + '<br>TWEETS</h6></li>' +
+					'<li><h6>' + data[i].user.friends_count + '<br>FOLLOWING</h6></li>' +
+					'<li><h6>' + data[i].user.followers_count + '<br>FOLLOWERS</h6></li>' +
 					'</div>' + //footer closing div
 					'</div>' //page closing div					
 			);
