@@ -59,7 +59,9 @@ function parseText(str, ent) {
 			// 15 tweets per page
 			if ((i > 0) && (i % 15 == 0)) {
 				page = (i / 15) + 1;
-				$('body').append('<div data-role="page" data-theme="b" id="page' + page + '">' +
+				next = page + 1;
+				prev = ((page - 1) == 0) ? page : page - 1;
+				$('body').append('<div data-role="page" data-theme="b"  class="my-page" id="page' + page + '" data-prev="page' + prev + '"  data-next="page' + next + '" data-dom-cache="true">' +
 								'<div data-role="header" data-position="fixed" data-theme="b">' +
 								'<h1>Twitter Favs</h1></div><div data-role="content">' +
 								'<ul id="tweetlist' + page + '" data-role="listview" data-inset="true" data-filter="true" data-theme="c" data-dividertheme="b">' +
@@ -143,6 +145,28 @@ function parseText(str, ent) {
 		$.mobile.activePage.find('.pagebutton'+id).css('color', '#4682B4');
 	});
 	
+	$( document ).on( "pageinit", "[data-role='page'].my-page", function() {
+		var page = "#" + $( this ).attr( "id" ),
+			next = "#" + $( this ).jqmData( "next" ),
+			prev = "#" + $( this ).jqmData( "prev" );
+			
+		if ( next ) {
+			// Prefetch the next page
+			$.mobile.loadPage( next );
+			// Navigate to next page on swipe left
+			$( document ).on( "swipeleft", page, function() {
+				$.mobile.changePage( next, { transition: "slidefade" });
+			});
+		}
+		
+		if ( prev ) {
+			// Navigate to previous page on swipe right
+			$( document ).on( "swiperight", page, function() {
+				$.mobile.changePage( prev, { transition: "slidefade", reverse: true } );
+			});
+			}
+	});
+	
 </script>
 
 <script src="http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.js"></script>
@@ -186,11 +210,15 @@ function parseText(str, ent) {
 		text-align: center;
 	}
 	
+	my-page { 
+		-webkit-backface-visibility: hidden; 
+	}
+	
 </style>
 </head>
 
 <body>
-<div data-role="page" id="page1">
+<div data-role="page" id="page1" class="my-page" data-prev="page1"  data-next="page2" data-dom-cache="true" >
   <div data-role="header" data-position="fixed" data-theme="b">
     <h1>Twitter Favs</h1>
   </div>
