@@ -22,21 +22,21 @@ function parseText(str, ent) {
 	if (ent.hashtags.length > 0) {
 		for (var c=0; c<ent.hashtags.length; c++) {
 			indices = ent.hashtags[c].indices;
-			atag = '<a href="http://twitter.com/search?q=%23' + ent.hashtags[c].text + '&src=hash">' + str.substring(indices[0], indices[1]) + '</a>';
+			atag = '<a  target="_blank" href="http://twitter.com/search?q=%23' + ent.hashtags[c].text + '&src=hash">' + str.substring(indices[0], indices[1]) + '</a>';
 			ret = ret.replace(str.substring(indices[0], indices[1]), atag);
 		}
 	}	
 	if (ent.urls.length > 0) {
 		for (var c=0; c<ent.urls.length; c++) {
 			indices = ent.urls[c].indices;
-			atag = '<a href="' + ent.urls[c].url + '">' + ent.urls[c].display_url + '</a>';
+			atag = '<a  target="_blank" href="' + ent.urls[c].url + '">' + ent.urls[c].display_url + '</a>';
 			ret = ret.replace(str.substring(indices[0], indices[1]), atag);
 		}
 	}	
 	if (ent.user_mentions.length > 0) {
 		for (var c=0; c<ent.user_mentions.length; c++) {
 			indices = ent.user_mentions[c].indices;
-			atag = '<a href="http://twitter.com/' + ent.user_mentions[c].screen_name + '">' + str.substring(indices[0], indices[1]) + '</a>';
+			atag = '<a  target="_blank" href="http://twitter.com/' + ent.user_mentions[c].screen_name + '">' + str.substring(indices[0], indices[1]) + '</a>';
 			ret = ret.replace(str.substring(indices[0], indices[1]), atag);
 		}
 	}	
@@ -98,7 +98,7 @@ function parseText(str, ent) {
 					'<p><a data-rel="dialog" data-theme="c" data-transition="slidedown" href="#user' + i + 
 					'" data-inline="true" data-role="button" data-icon="info">' +
 					'<strong>' + val.user.name + '</strong></a><br>' +
-					'<a href="http://twitter.com/' + val.user.screen_name + 
+					'<a  target="_blank" href="http://twitter.com/' + val.user.screen_name + 
 					'"><span class="screenname">@' + val.user.screen_name + 
 					'</span></a><br> tweeted on ' + parseDate(val.created_at) +
 					'</p>' + parseText(val.text, val.entities) + 
@@ -120,11 +120,11 @@ function parseText(str, ent) {
 						'<div data-role="content"><img src="' + val.user.profile_image_url + '">' +
 						'<div><h2>' + val.user.name + '</h2>' +
 						'<h4><a style="text-decoration: none;" ' + //link to twitter profile page
-						'href="https://twitter.com/' + val.user.screen_name + '">' +
+						' target="_blank" href="https://twitter.com/' + val.user.screen_name + '">' +
 						'@' + val.user.screen_name + '</a></h4></div>' +
 						'<div>' + val.user.description + '</div>' +
 						'<div><p>' + val.user.location + '<br>' +
-						'<a class="profile-link" href="' + val.user.url + '">' +
+						'<a  target="_blank" class="profile-link" href="' + val.user.url + '">' +
 						val.user.url + '</a></p></div>' + //user url
 						'</div>' + //content closing div
 						'<div data-role="footer" data-position="fixed" data-theme="b"><h6></h6>' +
