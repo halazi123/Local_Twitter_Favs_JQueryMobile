@@ -93,31 +93,29 @@ function parseText(str, ent) {
 					'</div>' //page closing div
 					);
 					
-			//create profile page
-			$('body').append(
-					'<div data-role="page" id="user' + i + '" style="text-align:center;">' +
-					'<div data-role="header" data-theme="b">' +
-					'<div data-role="navbar"><ul>' +
-					'<li><h6>' + val.user.listed_count + '<br>TWEETS</h6></li>' +
-					'<li><h6>' + val.user.friends_count + '<br>FOLLOWING</h6></li>' +
-					'<li><h6>' + val.user.followers_count + '<br>FOLLOWERS</h6></li>' +
-					'</ul></div>' +
-					'</div>' + //closing header
-					'<div data-role="content">' +
-					'<img src="' + val.user.profile_image_url + '">' +
-					'<div><h2>' + val.user.name + '</h2>' +
-					'<h4><a style="text-decoration: none;" ' + //link to twitter profile page
-					'href="https://twitter.com/' + val.user.screen_name + '">' +
-					'@' + val.user.screen_name + '</a></h4></div>' + 
-					'<div>' + val.user.description + '</div>' +
-					'<div><p>' + val.user.location + '<br>' + 
-					'<a class="profile-link" href="' + val.user.url + '">' + 
-					val.user.url + '</a></p></div>' + //user url
-					'</div>' + //content closing div
-					'<div data-role="footer" data-position="fixed" data-theme="b"><h1></h1>' +
-					'</div>' + //footer closing div
-					'</div>' //page closing div					
-			);
+				//create profile page
+				$('body').append(
+						'<div data-role="page" id="user' + i + '" style="text-align:center;">' +
+						'<div data-role="header" data-theme="b">' +
+						'<img src="' + val.user.profile_image_url + '"></div>' + //closing header
+						'<div data-role="content">' +
+						'<div><h2>' + val.user.name + '</h2>' +
+						'<h4><a style="text-decoration: none;" ' + //link to twitter profile page
+						'href="https://twitter.com/' + val.user.screen_name + '">' +
+						'@' + val.user.screen_name + '</a></h4></div>' +
+						'<div>' + val.user.description + '</div>' +
+						'<div><p>' + val.user.location + '<br>' +
+						'<a class="profile-link" href="' + val.user.url + '">' +
+						val.user.url + '</a></p></div>' + //user url
+						'</div>' + //content closing div
+						'<div data-role="footer" data-position="fixed" data-theme="b">' +
+						'<div data-role="navbar"><ul>' +
+						'<li><h6>' + val.user.listed_count + '<br>TWEETS</h6></li>' +
+						'<li><h6>' + val.user.friends_count + '<br>FOLLOWING</h6></li>' +
+						'<li><h6>' + val.user.followers_count + '<br>FOLLOWERS</h6></li>' +
+						'</div>' + //footer closing div
+						'</div>' //page closing div
+					);
 			
 			i++;
 		});
