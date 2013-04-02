@@ -7,13 +7,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
 
 <script>
+//parse twitter date format
 function parseDate(str) {
 	var v=str.split(' ');
 	var d = v[1]+" "+v[2]+", "+v[5];
 	return d;
 }
 
-// puts hashtags, urls, @tags into <a> tag
+// converts hashtags, urls, @tags into clickable external links
 function parseText(str, ent) {
 	var ret = str;
 	var atag = '';
@@ -24,24 +25,21 @@ function parseText(str, ent) {
 			atag = '<a href="http://twitter.com/search?q=%23' + ent.hashtags[c].text + '&src=hash">' + str.substring(indices[0], indices[1]) + '</a>';
 			ret = ret.replace(str.substring(indices[0], indices[1]), atag);
 		}
-	}
-	
+	}	
 	if (ent.urls.length > 0) {
 		for (var c=0; c<ent.urls.length; c++) {
 			indices = ent.urls[c].indices;
 			atag = '<a href="' + ent.urls[c].url + '">' + ent.urls[c].display_url + '</a>';
 			ret = ret.replace(str.substring(indices[0], indices[1]), atag);
 		}
-	}
-	
+	}	
 	if (ent.user_mentions.length > 0) {
 		for (var c=0; c<ent.user_mentions.length; c++) {
 			indices = ent.user_mentions[c].indices;
 			atag = '<a href="http://twitter.com/' + ent.user_mentions[c].screen_name + '">' + str.substring(indices[0], indices[1]) + '</a>';
 			ret = ret.replace(str.substring(indices[0], indices[1]), atag);
 		}
-	}
-	
+	}	
 	return ret;
 }
 </script>
@@ -53,6 +51,7 @@ function parseText(str, ent) {
 		var i = 0;
 		var page = 1;
 		var pagenav = '<a class="pagebutton1" href="#page1" data-role="button" data-inline="true">1</a>';
+		var block = 'a';
 		
 		$.each(data, function(key, val) {
 			
@@ -61,46 +60,64 @@ function parseText(str, ent) {
 				page = (i / 15) + 1;
 				next = page + 1;
 				prev = ((page - 1) == 0) ? page : page - 1;
-				$('body').append('<div data-role="page" data-theme="b"  class="my-page" id="page' + page + '" data-prev="page' + prev + '"  data-next="page' + next + '" data-dom-cache="true">' +
+				$('body').append('<div data-role="page" data-theme="b"  class="my-page" id="page' + page + '" data-prev="page' + 
+								prev + '"  data-next="page' + next + '" data-dom-cache="true">' +
 								'<div data-role="header" data-position="fixed" data-theme="b">' +
-								'<h1>Twitter Favs</h1></div><div data-role="content">' +
-								'<ul id="tweetlist' + page + '" data-role="listview" data-inset="true" data-filter="true" data-theme="c" data-dividertheme="b">' +
-								'</ul></div><div id="footer' + page + '" data-role="footer" data-position="fixed" data-theme="b"></div></div>'
+								'<h1>Twitter Favs</h1></div><div data-role="content">' + '<div class="ui-grid-b my-breakpoint" id="tweetlist' + page + 
+								'" data-theme="c">' +
+								'</div></div><div id="footer' + page + '" data-role="footer" data-position="fixed" data-theme="b"></div></div>'
 								);
 				pagenav += '<a class="pagebutton' + page +'" href="#page' + page + '" data-role="button" data-inline="true">' + page + '</a>';
 			}
 			
+			if ((i > 0) && (i % 3 == 0)) {
+				block = 'a';
+			}
+			else if ((i > 0) && (i % 3 == 1)) {
+				block = 'b';
+			}
+			else if ((i > 0) && (i % 3 == 2)) {
+				block = 'c';
+			}
+			
 			//add tweet to tweetlist
 			$('#tweetlist' + page).append(
-					'<li data-icon="false"><a href="#tweet' + i +'"><img src="' + val.user.profile_image_url + '"><p><strong class="username">' +
-					val.user.name + '</strong><span class="screenname"> @' + val.user.screen_name + '</span><br> on ' + parseDate(val.created_at) +
-					'</p><p>' + val.text + '</p></a></li>');
+					'<div class="ui-block-' + block +'"><a data-rel="popup" data-role="button" data-theme="c" href="#tweet' + i +'"><img src="' + 
+					val.user.profile_image_url + '" style="float:left"><p style="margin-top:1px"><strong class="username">' +
+					val.user.name + '</strong><span class="screenname"> @' + val.user.screen_name + 
+					'</span><br><span class="date"> on ' + parseDate(val.created_at) +
+					'<br>&nbsp' + val.text + '</span></p></a></div>');
 					
 			//create each tweet page
-			$('#page' + page).append('<div data-position-fixed="true" data-role="panel" id="tweet' + i + '">' +
+			$('#page' + page).append('<div data-role="popup" id="tweet' + i + '">' +
 					'<div class="ui-header ui-bar-b" data-role="header" data-theme="b" role="banner">' +
+					'<a href="#" data-rel="back" data-role="button" data-theme="b" data-icon="delete" data-iconpos="notext" class="ui-btn-right"></a>' +
 					'<img class="pagepic" src="' + val.user.profile_image_url + '">' +
 					'</div>' + //header closing div
 					'<div class="ui-content" data-role="content" role="main">' + 
-					'<p><a data-rel="dialog" data-transition="pop" href="#user' + i + '" data-inline="true" data-role="button" data-icon="info">' +
+					'<p><a data-rel="dialog" data-theme="c" data-transition="slidedown" href="#user' + i + 
+					'" data-inline="true" data-role="button" data-icon="info">' +
 					'<strong>' + val.user.name + '</strong></a><br>' +
-					'<a href="http://twitter.com/' + val.user.screen_name + '"><span class="screenname">@' + 
-					val.user.screen_name + 
+					'<a href="http://twitter.com/' + val.user.screen_name + 
+					'"><span class="screenname">@' + val.user.screen_name + 
 					'</span></a><br> tweeted on ' + parseDate(val.created_at) +
 					'</p>' + parseText(val.text, val.entities) + 
-					//'</p>' + val.text + 
 					'</div><div class="ui-footer ui-bar-b" data-role="footer" data-position-fixed="true" data-theme="b" role="contentinfo">' +
-					'<div class="footerbutton">' + val.retweet_count + '<br>Retweets</div>' +
-					'</div>' +
-					'</div>' //page closing div
+					'<div class="footerbutton">' + val.retweet_count + '<br>Retweets</div></div></div>' //page closing div
 					);
 					
 				//create profile page
 				$('body').append(
-						'<div data-role="page" id="user' + i + '" style="text-align:center;">' +
+						'<div data-role="page" data-close-btn="none" id="user' + i + '" style="text-align:center;">' +
 						'<div data-role="header" data-theme="b">' +
-						'<img src="' + val.user.profile_image_url + '"></div>' + //closing header
-						'<div data-role="content">' +
+						'<div data-role="navbar"><ul>' +
+						'<li><h6>' + val.user.listed_count + '<br>TWEETS</h6></li>' +
+						'<li><h6>' + val.user.friends_count + '<br>FOLLOWING</h6></li>' +
+						'<li><h6>' + val.user.followers_count + '<br>FOLLOWERS</h6></li>' +
+						'</div>' + //footer closing div
+						'<a href="#" data-rel="back" data-role="button" data-theme="b" data-icon="delete" data-iconpos="notext" class="ui-btn-right"></a>' +
+						'</div>' + //closing header
+						'<div data-role="content"><img src="' + val.user.profile_image_url + '">' +
 						'<div><h2>' + val.user.name + '</h2>' +
 						'<h4><a style="text-decoration: none;" ' + //link to twitter profile page
 						'href="https://twitter.com/' + val.user.screen_name + '">' +
@@ -110,13 +127,8 @@ function parseText(str, ent) {
 						'<a class="profile-link" href="' + val.user.url + '">' +
 						val.user.url + '</a></p></div>' + //user url
 						'</div>' + //content closing div
-						'<div data-role="footer" data-position="fixed" data-theme="b">' +
-						'<div data-role="navbar"><ul>' +
-						'<li><h6>' + val.user.listed_count + '<br>TWEETS</h6></li>' +
-						'<li><h6>' + val.user.friends_count + '<br>FOLLOWING</h6></li>' +
-						'<li><h6>' + val.user.followers_count + '<br>FOLLOWERS</h6></li>' +
-						'</div>' + //footer closing div
-						'</div>' //page closing div
+						'<div data-role="footer" data-position="fixed" data-theme="b"><h6></h6>' +
+						'</div></div>' //page closing div
 					);
 			
 			i++;
@@ -129,68 +141,93 @@ function parseText(str, ent) {
 				num = (c / 10) + 1;
 				$('#footer' + num).append('<div class="footerbutton">' + pagenav + '</div>');				
 			}
-		}
+		}		
 		
-		
-		$('#tweetlist1').listview('refresh');
-		$('#footer1').trigger('create');
+		//$('#tweetlist1').trigger('create');
+		//$('#footer1').trigger('create');
 		$.mobile.activePage.trigger('create');
-		$.mobile.activePage.trigger('update');
 	});
 </script>
 
 <script>
+	//change the current page button color
 	$(document).on('pagebeforeshow', function() {
 		var id = $.mobile.activePage.attr('id').substring(4);
 		$.mobile.activePage.find('.pagebutton'+id).css('color', '#4682B4');
 	});
 	
+	//swipe to flip between pages
 	$( document ).on( "pageinit", "[data-role='page'].my-page", function() {
-		var page = "#" + $( this ).attr( "id" ),
+		var id = $( this ).attr( "id" ).substring(4),
 			next = "#" + $( this ).jqmData( "next" ),
-			prev = "#" + $( this ).jqmData( "prev" );
-			
+			prev = "#" + $( this ).jqmData( "prev" );			
 		if ( next ) {
 			// Prefetch the next page
 			$.mobile.loadPage( next );
 			// Navigate to next page on swipe left
-			$( document ).on( "swipeleft", page, function() {
+			$( document ).on( "swipeleft", '#tweetlist'+id, function() {
 				$.mobile.changePage( next, { transition: "slidefade" });
 			});
-		}
-		
+		}		
 		if ( prev ) {
 			// Navigate to previous page on swipe right
-			$( document ).on( "swiperight", page, function() {
+			$( document ).on( "swiperight", '#tweetlist'+id, function() {
 				$.mobile.changePage( prev, { transition: "slidefade", reverse: true } );
 			});
-			}
-	});
-	
+		}
+	});	
 </script>
 
 <script src="http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.js"></script>
 
 <style type="text/css">
-	
-	.alignleft {
-	float: left;
+
+	@media all and (max-width: 35em) {
+		.my-breakpoint .ui-block-a, 
+		.my-breakpoint .ui-block-b, 
+		.my-breakpoint .ui-block-c,
+		.my-breakpoint .ui-block-d,
+		.my-breakpoint .ui-block-e { 
+			width: 100%; 
+			float:none; 
+		}
 	}
-	.alignright {
-		float: right;
+  
+	@media all and (min-width: 45em) {
+		.my-breakpoint.ui-grid-b .ui-block-a { width: 49.95%; }
+		.my-breakpoint.ui-grid-b .ui-block-b, 
+		.my-breakpoint.ui-grid-b .ui-block-c { width: 24.925%; }
+	}
+  
+	.my-breakpoint .ui-block-a p, 
+    .my-breakpoint .ui-block-b p, 
+    .my-breakpoint .ui-block-c p {
+		overflow:hidden;
+		text-overflow:ellipsis;
 	}
 	
 	.username {
-		font-size:1.1em;
+		font-size:0.8em;
 	}
 	
 	.screenname {
-		font-size:0.9em;
+		font-size:0.7em;
 		color:#6495ED;
 	}
 	
-	ul li {
-		max-height: 70px;
+	.date {
+		font-size:0.8em;
+		font-weight:lighter;
+	}
+	
+	.my-breakpoint a {
+		max-height:80px;
+		margin:1px;
+		padding:1px;
+	}
+	
+	.my-breakpoint .ui-btn-inner	{
+		padding-left:1px;
 	}
 	
 	img {
@@ -224,7 +261,7 @@ function parseText(str, ent) {
   </div>
 
   <div data-role="content">
-  	<ul id="tweetlist1" data-role="listview" data-inset="true" data-filter="true" data-theme="c" data-dividertheme="b"></ul>
+  	<div class="ui-grid-b my-breakpoint" id="tweetlist1" data-theme="c"></div>
   </div>  
   
   <div id="footer1" data-role="footer" data-position="fixed" data-theme="b"></div>
